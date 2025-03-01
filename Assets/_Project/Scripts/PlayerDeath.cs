@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerDeath : MonoBehaviour
 {
-    [SerializeField] private ForDeveloper forDev;
+    [SerializeField] private LevelManager forDev;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -13,7 +13,7 @@ public class PlayerDeath : MonoBehaviour
         }
     }
 
-    private void Death()
+    public void Death()
     {
         Debug.Log("You die");
         if(forDev != null)
