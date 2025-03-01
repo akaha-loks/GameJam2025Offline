@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ForDeveloper : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform spawnTransform;
 
+#if UNITY_EDITOR
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -17,13 +18,13 @@ public class ForDeveloper : MonoBehaviour
             RestartPosition();
         }
     }
-
-    private void Restart()
+#endif
+    public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    private void RestartPosition()
+    public void RestartPosition()
     {
         playerTransform.position = spawnTransform.position;
     }
