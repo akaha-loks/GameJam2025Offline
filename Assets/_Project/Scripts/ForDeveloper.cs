@@ -18,12 +18,12 @@ public class ForDeveloper : MonoBehaviour
         }
     }
 
-    private void Restart()
+    public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    private void RestartPosition()
+    public void RestartPosition()
     {
         playerTransform.position = spawnTransform.position;
     }
