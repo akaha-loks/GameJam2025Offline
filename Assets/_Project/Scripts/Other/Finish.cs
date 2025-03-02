@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Finish : MonoBehaviour
 {
-    [SerializeField] private GameObject finishView; 
+    [SerializeField] private GameObject finishScene;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,8 +15,7 @@ public class Finish : MonoBehaviour
 
     private void OpenFinishView()
     {
-        finishView.SetActive(true);
-        Time.timeScale = 0;
+        finishScene.SetActive(true);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
     }
