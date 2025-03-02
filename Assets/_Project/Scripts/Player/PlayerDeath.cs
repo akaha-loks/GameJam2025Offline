@@ -6,12 +6,15 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField] private LevelManager forDev;
     [SerializeField] private RoboCopController roboCop;
     [SerializeField] private GameObject endEffect;
+    [SerializeField] private AudioSource findAudio;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("OnFloor"))
         {
             RoboCopFind();
             Debug.Log("Find");
+
         }
 
         if (other.CompareTag("Death"))
@@ -38,6 +41,8 @@ public class PlayerDeath : MonoBehaviour
     {
         if (roboCop != null)
             roboCop.isPlayerFind = true;
+        findAudio.Play();
+        
     }
 
     public void RoboCopNotFind()
