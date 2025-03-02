@@ -105,6 +105,8 @@ namespace StarterAssets
         [SerializeField] private AudioSource jumpAudioSource; // Источник звука прыжка
         [SerializeField] private AudioClip jumpClip; // Звук прыжка
 
+        [SerializeField] private Cover cover;
+
 
 
 #if ENABLE_INPUT_SYSTEM 
@@ -224,6 +226,12 @@ namespace StarterAssets
         {
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
+            // Если игрок на ковре, уменьшаем скорость в 2 раза
+            if (cover != null && cover.isOnsCover)
+            {
+                targetSpeed *= 0.5f;
+            }
+
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -299,17 +307,14 @@ namespace StarterAssets
         {
             if (Grounded)
             {
-                // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
 
-                // update animator if using character
                 if (_hasAnimator)
                 {
                     _animator.SetBool(_animIDJump, false);
                     _animator.SetBool(_animIDFreeFall, false);
                 }
 
-                // stop our velocity dropping infinitely when grounded
                 if (_verticalVelocity < 0.0f)
                 {
                     _verticalVelocity = -2f;
@@ -318,7 +323,10 @@ namespace StarterAssets
                 // Jump
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
-                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    // Если игрок на ковре, уменьшаем высоту прыжка в 2 раза
+                    float jumpMultiplier = (cover != null && cover.isOnsCover) ? 0.5f : 1f;
+
+                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity) * jumpMultiplier;
 
                     jumpAudioSource.PlayOneShot(jumpClip);
                     jumpAudioSource.pitch = Random.Range(1.3f, 1.6f);
@@ -327,9 +335,9 @@ namespace StarterAssets
                     Vector3 forwardDirection = new Vector3(_controller.velocity.x, 0, _controller.velocity.z).normalized;
                     if (forwardDirection.magnitude < 0.1f)
                     {
-                        forwardDirection = transform.forward; // Если игрок стоит на месте, используем направление персонажа
+                        forwardDirection = transform.forward;
                     }
-                    _jumpImpulse = forwardDirection * JumpForwardForce;
+                    _jumpImpulse = forwardDirection * JumpForwardForce * jumpMultiplier; // Импульс тоже уменьшаем
 
                     if (_hasAnimator)
                     {
@@ -337,8 +345,6 @@ namespace StarterAssets
                     }
                 }
 
-
-                // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
                 {
                     _jumpTimeoutDelta -= Time.deltaTime;
@@ -346,33 +352,26 @@ namespace StarterAssets
             }
             else
             {
-                // reset the jump timeout timer
                 _jumpTimeoutDelta = JumpTimeout;
 
-                // fall timeout
                 if (_fallTimeoutDelta >= 0.0f)
                 {
                     _fallTimeoutDelta -= Time.deltaTime;
                 }
-                else
+                else if (_hasAnimator)
                 {
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDFreeFall, true);
-                    }
+                    _animator.SetBool(_animIDFreeFall, true);
                 }
 
-                // if we are not grounded, do not jump
                 _input.jump = false;
             }
 
-            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
             if (_verticalVelocity < _terminalVelocity)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
         }
+
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
