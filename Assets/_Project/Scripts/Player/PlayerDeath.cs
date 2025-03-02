@@ -5,9 +5,9 @@ public class PlayerDeath : MonoBehaviour
 {
     [SerializeField] private LevelManager forDev;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.CompareTag("Death"))
+        if (collision.gameObject.CompareTag("Death"))
         {
             Death();
         }
@@ -19,6 +19,6 @@ public class PlayerDeath : MonoBehaviour
         if(forDev != null)
             forDev.RestartPosition();
         else
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene("DeathDromRoboCop");
     }
 }
