@@ -5,28 +5,49 @@ public class PlayerStamina : MonoBehaviour
 {
     [SerializeField] private Image staminaBarImg;
     [SerializeField] private float fillAmount = 1f; // Полная шкала
-    [SerializeField] private float depletionTime = 5f; // Время до полного уменьшения (секунды)
+    [SerializeField] private float depletionTime = 0.5f; // Время на уменьшение (секунды)
     [SerializeField] private LevelManager level;
+    [SerializeField] private GameObject danger;
+    [SerializeField] private float amount;
 
-    private float depletionRate;
+    private bool dangerActivated = false; // Флаг, чтобы не включать `danger` каждый кадр
+    private float targetStamina; // Целевая стамина
+    private float lerpTimer = 0f; // Таймер для Lerp
 
     private void Start()
     {
-        depletionRate = 1f / depletionTime; // Рассчитываем скорость уменьшения
+        danger.SetActive(false); // По умолчанию `danger` выключен
+        targetStamina = fillAmount; // Начальная цель — полная шкала
     }
 
     private void Update()
     {
-        if (fillAmount > 0)
+        // Плавно уменьшаем стамину
+        if (fillAmount > targetStamina)
         {
-            fillAmount -= depletionRate * Time.deltaTime; // Плавное уменьшение
-            fillAmount = Mathf.Clamp01(fillAmount); // Ограничение от 0 до 1
+            lerpTimer += Time.deltaTime / depletionTime;
+            fillAmount = Mathf.Lerp(fillAmount, targetStamina, lerpTimer);
         }
-        else
+
+        if (fillAmount <= 0)
         {
             level.Restart();
         }
 
         staminaBarImg.fillAmount = fillAmount;
+
+        // Включаем danger при 30% стамины
+        if (fillAmount <= 0.2f && !dangerActivated)
+        {
+            danger.SetActive(true);
+            dangerActivated = true;
+        }
+    }
+
+    // Вызов уменьшения стамины
+    public void CutStamina()
+    {
+        targetStamina = Mathf.Clamp(fillAmount - amount, 0f, 1f); // Устанавливаем новую цель
+        lerpTimer = 0f; // Сбрасываем таймер Lerp
     }
 }

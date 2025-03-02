@@ -106,6 +106,7 @@ namespace StarterAssets
         [SerializeField] private AudioClip jumpClip; // Звук прыжка
 
         [SerializeField] private Cover cover;
+        [SerializeField] private PlayerStamina stamina;
 
 
 
@@ -330,6 +331,8 @@ namespace StarterAssets
 
                     jumpAudioSource.PlayOneShot(jumpClip);
                     jumpAudioSource.pitch = Random.Range(1.3f, 1.6f);
+
+                    stamina.CutStamina();
 
                     // Добавляем импульс в сторону движения персонажа
                     Vector3 forwardDirection = new Vector3(_controller.velocity.x, 0, _controller.velocity.z).normalized;
