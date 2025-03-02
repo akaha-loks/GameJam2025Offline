@@ -7,6 +7,7 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField] private RoboCopController roboCop;
     [SerializeField] private GameObject endEffect;
     [SerializeField] private AudioSource findAudio;
+    [SerializeField] private AudioSource roboCopOnAudio;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -42,12 +43,22 @@ public class PlayerDeath : MonoBehaviour
         if (roboCop != null)
             roboCop.isPlayerFind = true;
         findAudio.Play();
-        
+        Invoke("RoboCopAudioPlay", 1f);
     }
 
     public void RoboCopNotFind()
     {
         if (roboCop != null)
             roboCop.isPlayerFind = false;
+        Invoke("RoboCopAudioStop", 0.5f);
+    }
+
+    private void RoboCopAudioPlay()
+    {
+        roboCopOnAudio.Play();
+    }
+    private void RoboCopAudioStop()
+    {
+        roboCopOnAudio.Stop();
     }
 }
