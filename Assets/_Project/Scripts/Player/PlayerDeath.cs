@@ -4,21 +4,45 @@ using UnityEngine.SceneManagement;
 public class PlayerDeath : MonoBehaviour
 {
     [SerializeField] private LevelManager forDev;
+    [SerializeField] private RoboCopController roboCop;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Death"))
+        if (other.CompareTag("OnFloor"))
         {
-            Death();
+            RoboCopFind();
+            Debug.Log("Find");
+        }
+
+        if (other.CompareTag("Death"))
+        {
+            Die();
         }
     }
 
-    public void Death()
+    private void OnTriggerExit(Collider other)
     {
-        Debug.Log("You die");
-        if(forDev != null)
-            forDev.RestartPosition();
-        else
-            SceneManager.LoadScene("DeathDromRoboCop");
+        if (other.CompareTag("OnFloor"))
+        {
+            RoboCopNotFind();
+            Debug.Log("Not Find");
+        }
+    }
+
+    private void Die()
+    {
+        SceneManager.LoadScene("DeathFromRoboCop");
+    }
+
+    public void RoboCopFind()
+    {
+        if (roboCop != null)
+            roboCop.isPlayerFind = true;
+    }
+
+    public void RoboCopNotFind()
+    {
+        if (roboCop != null)
+            roboCop.isPlayerFind = false;
     }
 }
