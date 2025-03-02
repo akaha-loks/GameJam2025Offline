@@ -27,4 +27,5 @@ public class UIManager : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
 }

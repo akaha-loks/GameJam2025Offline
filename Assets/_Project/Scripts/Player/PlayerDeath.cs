@@ -5,7 +5,7 @@ public class PlayerDeath : MonoBehaviour
 {
     [SerializeField] private LevelManager forDev;
     [SerializeField] private RoboCopController roboCop;
-
+    [SerializeField] private GameObject endEffect;
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("OnFloor"))
@@ -31,7 +31,7 @@ public class PlayerDeath : MonoBehaviour
 
     private void Die()
     {
-        SceneManager.LoadScene("DeathFromRoboCop");
+        endEffect.SetActive(true);
     }
 
     public void RoboCopFind()
