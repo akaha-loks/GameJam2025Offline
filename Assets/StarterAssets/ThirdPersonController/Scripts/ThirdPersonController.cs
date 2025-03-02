@@ -101,6 +101,11 @@ namespace StarterAssets
         private Vector3 _jumpImpulse = Vector3.zero;
         public float JumpForwardForce = 3f;
 
+        [SerializeField] private AudioSource footstepAudioSource; // Источник звука шагов
+        [SerializeField] private AudioSource jumpAudioSource; // Источник звука прыжка
+        [SerializeField] private AudioClip jumpClip; // Звук прыжка
+
+
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -265,6 +270,28 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
+
+            if (_input.move != Vector2.zero && Grounded)
+            {
+                if (_input.sprint)  // Если игрок бежит, увеличиваем питч до 2
+                {
+                    footstepAudioSource.pitch = 2f;
+                }
+                else
+                {
+                    footstepAudioSource.pitch = 1.6f; // Иначе оставляем на обычном значении
+                }
+
+                if (!footstepAudioSource.isPlaying)
+                {
+                    footstepAudioSource.Play();
+                }
+            }
+            else
+            {
+                footstepAudioSource.Stop();
+            }
+
         }
 
 
@@ -292,6 +319,9 @@ namespace StarterAssets
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+                    jumpAudioSource.PlayOneShot(jumpClip);
+                    jumpAudioSource.pitch = Random.Range(1.3f, 1.6f);
 
                     // Добавляем импульс в сторону движения персонажа
                     Vector3 forwardDirection = new Vector3(_controller.velocity.x, 0, _controller.velocity.z).normalized;
