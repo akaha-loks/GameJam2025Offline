@@ -6,6 +6,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform spawnTransform;
 
+    private void Start()
+    {
+        Time.timeScale = 1;
+    }
 #if UNITY_EDITOR
     private void Update()
     {
