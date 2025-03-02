@@ -9,6 +9,7 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private LevelManager level;
     [SerializeField] private GameObject danger;
     [SerializeField] private float amount;
+    [SerializeField] private AudioSource heartAudio;
 
     private bool dangerActivated = false; // Флаг, чтобы не включать `danger` каждый кадр
     private float targetStamina; // Целевая стамина
@@ -41,6 +42,7 @@ public class PlayerStamina : MonoBehaviour
         {
             danger.SetActive(true);
             dangerActivated = true;
+            heartAudio.Play();
         }
     }
 
