@@ -6,6 +6,8 @@ public class EmissionColorChanger : MonoBehaviour
     [SerializeField] private float minSpeed = 1f; // Минимальная скорость
     [SerializeField] private float maxSpeed = 4f; // Максимальная скорость
 
+    [SerializeField] private float range = 2f;
+
     private Material material;
     private float speed;
     private float time;
@@ -34,7 +36,7 @@ public class EmissionColorChanger : MonoBehaviour
         float g = Mathf.Sin(time + 2f) * 0.5f + 0.5f;
         float b = Mathf.Sin(time + 4f) * 0.5f + 0.5f;
 
-        Color emissionColor = new Color(r, g, b) * 2f; // Умножаем для яркости
+        Color emissionColor = new Color(r, g, b) * range; // Умножаем для яркости
 
         material.SetColor("_EmissionColor", emissionColor);
     }
